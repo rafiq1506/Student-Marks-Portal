@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Admin Panel — Academic Records | Regal Interface</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700;800&family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* additional admin-specific refinements */
+    .admin-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    element.style{
+      
+    }
+
+    .admin-header-luxury {
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .greeting-badge {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #17b2a9;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .admin-title-luxury {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #050505;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .admin-subtitle {
+      color: #666f78;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .stat-badge {
+      background: linear-gradient(135deg, rgba(23, 178, 169, 0.12) 0%, rgba(87, 196, 143, 0.14) 100%);
+      border-radius: 60px;
+      padding: 4px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #13756f;
+    }
+
+    body.admin-login-mode {
+      background: #ffffff;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    body.admin-login-mode::before {
+      background:
+        radial-gradient(circle at 50% -18px, rgba(33, 168, 181, 0.28) 0 1px, transparent 1.35px),
+        radial-gradient(circle at 50% -16px, rgba(99, 197, 108, 0.2) 0 1px, transparent 1.35px),
+        radial-gradient(circle at -26px 96px, rgba(33, 168, 181, 0.2) 0 1px, transparent 1.25px);
+      background-size: 4px 4px, 7px 7px, 4px 4px;
+      background-position: 50% -22px, 50% -14px, 0 0;
+      mask-image:
+        radial-gradient(ellipse 360px 118px at 50% 0, black 0 52%, transparent 84%),
+        radial-gradient(ellipse 86px 160px at 0 120px, black 0 45%, transparent 86%);
+      opacity: 0.92;
+    }
+
+    body.admin-login-mode .admin-shell {
+      max-width: none;
+      min-height: 100vh;
+      padding: 0 24px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    body.admin-login-mode .admin-header-luxury {
+      display: none;
+    }
+
+    .admin-login-card {
+      width: min(100%, 408px);
+      margin: 0 auto;
+      text-align: center;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: visible;
+      transform: none !important;
+    }
+
+    .admin-login-card .panel-body {
+      padding: 0;
+    }
+
+    .admin-login-card .panel-header,
+    .admin-login-card .panel-decoration,
+    .admin-login-card .btn-icon {
+      display: none;
+    }
+
+    .admin-login-mark {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      margin: 0 auto 17px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #21a8b5 0%, #63c56c 100%);
+      color: #ffffff;
+      box-shadow: none !important;
+    }
+
+    .admin-login-mark svg {
+      width: 42px;
+      height: 42px;
+    }
+
+    .admin-login-title {
+      font-family: Inter, sans-serif;
+      font-size: 24px;
+      line-height: 1.18;
+      font-weight: 800;
+      color: #050505;
+      margin: 0 0 6px;
+    }
+
+    .admin-login-subtitle {
+      font-size: 18px;
+      line-height: 1.35;
+      color: #666f78;
+      margin: 0 0 42px;
+      font-weight: 400;
+    }
+
+    .admin-login-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 31px;
+      color: #59616b;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .admin-login-divider::before,
+    .admin-login-divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: #e5e7eb;
+    }
+
+    .admin-login-card .input-luxury {
+      text-align: left;
+      margin-bottom: 13px;
+    }
+
+    .admin-login-card .input-luxury label {
+      color: #050505;
+      font-size: 14px;
+      letter-spacing: 0;
+      text-transform: none;
+      font-weight: 700;
+      margin-bottom: 11px;
+    }
+
+    .admin-login-card .luxury-input-wrap {
+      min-height: 52px;
+      height: 52px;
+      border-radius: 26px !important;
+      background: #ffffff !important;
+      border: 1px solid #d7dbe2 !important;
+      box-shadow: none !important;
+    }
+
+    .admin-login-card .luxury-input-wrap:focus-within {
+      border-color: #111111;
+      box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.08);
+    }
+
+    .admin-login-card .input-prefix {
+      color: #1463ff;
+      font-size: 18px;
+      padding-left: 22px;
+      padding-right: 11px;
+    }
+
+    .admin-login-card .luxury-input-wrap input {
+      font-family: Inter, sans-serif;
+      font-size: 16px;
+      color: #111827;
+      padding: 0 22px 0 0;
+    }
+
+    .admin-login-card .luxury-input-wrap input::placeholder {
+      color: #68727f;
+    }
+
+    .admin-login-card .btn-luxury-primary {
+      min-height: 44px;
+      height: 44px;
+      margin-top: 12px;
+      border-radius: 22px !important;
+      background: #262626 !important;
+      box-shadow: 0 4px 9px rgba(0, 0, 0, 0.25) !important;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .admin-login-card .btn-luxury-primary:hover {
+      background: #111111;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-login-card .message-luxury {
+      text-align: left;
+      border-radius: 18px;
+    }
+
+    .admin-login-legal {
+      margin-top: 11px;
+      color: #646b75;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .admin-login-title {
+        font-size: 24px;
+      }
+
+      .admin-login-subtitle {
+        font-size: 17px;
+        margin-bottom: 36px;
+      }
+
+      .admin-login-divider {
+        font-size: 12px;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body class="admin-login-mode">
+
+<div class="admin-shell">
+  <!-- Luxurious Header -->
+  <div class="admin-header-luxury">
+    <div class="greeting-badge">✦ Administration Console ✦</div>
+    <h1 class="admin-title-luxury">Academic Records<br><span style="font-size: 1.8rem; color: var(--accent-gold);">Data Stewardship Panel</span></h1>
+    <div class="admin-subtitle">Securely manage student internal assessment data sources</div>
+    <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <span class="stat-badge">🔐 OTP Protected</span>
+      <span class="stat-badge">📊 Real-time Sync</span>
+      <span class="stat-badge">🎓 Verified Records</span>
+    </div>
+  </div>
+
+  <!-- Glass-morphism Stats Bar -->
+  <div id="admin-stats" class="stats-ribbon hidden">
+    <div class="stat-item">
+      <span class="stat-emoji">📚</span>
+      <div>
+        <div class="stat-label">Active Semester</div>
+        <div class="stat-value">Spring 2026</div>
+      </div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-emoji">🏛️</span>
+      <div>
+        <div class="stat-label">Academic Year</div>
+        <div class="stat-value">2025-2026</div>
+      </div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-emoji">⚡</span>
+      <div>
+        <div class="stat-label">System Status</div>
+        <div class="stat-value" style="color: #2e7d32;">Operational</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Authentication Card (Elevated) -->
+  <div id="admin-login-panel" class="admin-glass-panel admin-login-card">
+    <div class="admin-login-mark" aria-hidden="true">
+      <svg width="46" height="46" viewBox="0 0 48 48" fill="none" role="img">
+        <path d="M24 7c6 5 9 10 9 17s-3 12-9 17c-6-5-9-10-9-17s3-12 9-17Z" stroke="currentColor" stroke-width="3" />
+        <path d="M8 24c5-6 10-9 16-9s11 3 16 9c-5 6-10 9-16 9S13 30 8 24Z" stroke="currentColor" stroke-width="3" />
+        <circle cx="24" cy="24" r="5" fill="currentColor" />
+        <path d="M35 8l1.5 3L40 12.5l-3.5 1.5L35 17l-1.5-3L30 12.5l3.5-1.5L35 8Z" fill="currentColor" />
+      </svg>
+    </div>
+    <h1 class="admin-login-title">Admin Console</h1>
+<!--    <p class="admin-login-subtitle">Choose how you would like to sign in</p>-->
+    <div class="admin-login-divider">Continue with your password</div>
+    <div class="panel-decoration"></div>
+    <div class="panel-header">
+      <div class="header-icon-group">
+        <span class="icon-ring">🔐</span>
+        <div>
+          <h3>Privileged Access</h3>
+          <p class="panel-sub">Administrator verification required</p>
+        </div>
+      </div>
+      <div class="lock-indicator">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="11" width="14" height="11" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+        <span>Secure Zone</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="input-luxury">
+        <label> Admin Password</label>
+        <div class="luxury-input-wrap">
+          <span class="input-prefix">✦</span>
+          <input type="password" id="admin-password" placeholder="Enter secure password" autocomplete="current-password" />
+        </div>
+      </div>
+      <button id="refresh-status" class="btn-luxury-primary">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3l7 3v5c0 4.6-2.8 8.8-7 10-4.2-1.2-7-5.4-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.8" />
+          <path d="M9 12l2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="btn-text">Authenticate Admin</span>
+        <span class="btn-icon">→</span>
+      </button>
+      <div id="admin-message" class="message-luxury" role="status"></div>
+      <p class="admin-login-legal">By continuing, you agree to manage student records responsibly.</p>
+    </div>
+  </div>
+
+  <div id="admin-dashboard" class="hidden">
+  <div id="dashboard-message" class="message-luxury" role="status"></div>
+  <div class="uploaded-papers-shell">
+    <div class="data-card uploaded-papers-card">
+      <div class="card-header-luxury">
+        <div class="card-icon-bg">📚</div>
+        <div>
+          <h4>Uploaded Papers</h4>
+          <p class="card-subtitle">All uploaded papers available in the student portal</p>
+        </div>
+      </div>
+      <div id="paper-list" class="paper-list">
+        <div class="chip-skeleton">No papers loaded yet</div>
+      </div>
+      <button id="show-upload-data" class="btn-secondary-luxury upload-data-file-btn">
+        <span>Upload Data File</span>
+        <span>+</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="admin-upload-panel" class="admin-upload-inline hidden">
+    <div class="card">
+      <div class="upload-header">
+        <div class="upload-icon"><i class="ti ti-database-import"></i></div>
+        <div>
+          <p class="upload-title">Upload data</p>
+          <p class="upload-sub">Choose the source for a paper record</p>
+        </div>
+        <button id="hide-upload-data" class="upload-close-btn" type="button" aria-label="Close upload form">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+
+      <div class="status-bar" id="statusBar" role="status">
+        <i class="ti ti-circle-check" id="statusIcon"></i>
+        <span id="statusText">Select a data source to get started</span>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="field-group">
+        <p class="field-label">Select data source file</p>
+        <div class="source-row">
+          <span class="source-label">Data source</span>
+          <select id="sourceSelect">
+            <option value="">- choose source -</option>
+            <option value="excel">Excel file (.xlsx / .xls)</option>
+            <option value="google">Google Sheet</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="excelFields" class="hidden">
+        <div class="field-group">
+          <p class="field-label">Name of the paper</p>
+          <div class="field-input">
+            <i class="ti ti-file-description"></i>
+            <input type="text" placeholder="e.g. Field Theory and Galois Extension" id="paperNameExcel" />
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="excel-zone" id="excelZone">
+            <i class="ti ti-file-spreadsheet"></i>
+            <p class="ez-title">Click to upload your Excel file</p>
+            <p class="ez-sub">Supports .xlsx and .xls formats</p>
+          </div>
+          <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none" />
+        </div>
+      </div>
+
+      <div id="googleFields" class="hidden">
+        <div class="field-group">
+          <p class="field-label">Name of the paper</p>
+          <div class="field-input">
+            <i class="ti ti-file-description"></i>
+            <input type="text" placeholder="e.g. Field Theory and Galois Extension" id="paperNameGoogle" />
+          </div>
+        </div>
+        <div class="field-group">
+          <p class="field-label">Public Google Sheet URL</p>
+          <div class="field-input">
+            <i class="ti ti-link"></i>
+            <input type="url" placeholder="https://docs.google.com/spreadsheets/d/..." id="sheetUrl" />
+          </div>
+        </div>
+      </div>
+
+      <button class="activate-btn" id="activateBtn" type="button">
+        <i class="ti ti-check"></i>
+        <span id="btnText">Activate</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="admin-format-reference-shell">
+    <div class="admin-format-reference">
+      <div class="format-reference-copy">
+        <i class="ti ti-table-options"></i>
+        <p>Excel or Google file should have the following columns</p>
+      </div>
+      <img
+        src="https://i.postimg.cc/nVwvH2bK/excel-sheet-format.png"
+        alt="Required Excel or Google Sheet column format"
+        loading="lazy"
+      />
+    </div>
+  </div>
+
+  <!-- Footer Elegant -->
+  <div class="admin-footer">
+    <div class="footer-divider"></div>
+    <div class="footer-content">
+      <span>Ācārya Kalanidhi • Internal Assessment Office</span>
+      <span>Secured by OTP & Administrative Authentication</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script src="admin.js?v=20260517-inline-upload"></script>
+<script src="admin-upload.js?v=20260517-inline-upload"></script>
+</body>
+</html>
