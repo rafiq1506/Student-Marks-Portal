@@ -19,6 +19,9 @@ from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
 from uuid import uuid4
 import pandas as pd
+from keep_alive import keep_alive
+keep_alive()
+
 
 warnings.filterwarnings(
     "ignore",
