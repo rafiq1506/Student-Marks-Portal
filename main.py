@@ -10,18 +10,17 @@ import ssl
 import subprocess
 import warnings
 import time
+import urllib.error
 import urllib.request
 from io import BytesIO, StringIO
 from email.message import EmailMessage
+from email.utils import parseaddr
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlparse
 from uuid import uuid4
 import pandas as pd
-from keep_alive import keep_alive
-keep_alive()
-
 
 warnings.filterwarnings(
     "ignore",
@@ -331,6 +330,14 @@ def smtp_is_configured() -> bool:
         os.getenv(key)
         for key in ("SMTP_HOST", "SMTP_USER", "SMTP_PASS")
     )
+
+
+def email_api_is_configured() -> bool:
+    return bool(os.getenv("RESEND_API_KEY"))
+
+
+def otp_email_is_configured() -> bool:
+    return smtp_is_configured() or email_api_is_configured()
 
 
 def smtp_security_mode(port: int) -> str:
@@ -1349,6 +1356,25 @@ def send_email_otp(email: str, otp: str, name: str) -> tuple[bool, str]:
     if email.lower().endswith("@example.com"):
         return False, "student email is a placeholder example.com address"
 
+    subject = "Your Login OTP"
+    body = (
+        f"Hello {name},\n\nYour OTP for the student portal is {otp}. "
+        "It will expire in 10 minutes.\n\nThank you."
+    )
+
+    resend_api_key = os.getenv("RESEND_API_KEY")
+    if resend_api_key:
+        api_sender = email_sender_address()
+        if not api_sender:
+            return False, "EMAIL_FROM or SMTP_FROM must be a verified sender email address for Resend"
+        return send_email_otp_with_resend(
+            api_key=resend_api_key,
+            sender=api_sender,
+            recipient=email,
+            subject=subject,
+            body=body,
+        )
+
     host = os.getenv("SMTP_HOST")
     user = os.getenv("SMTP_USER")
     password = os.getenv("SMTP_PASS")
@@ -1358,12 +1384,6 @@ def send_email_otp(email: str, otp: str, name: str) -> tuple[bool, str]:
 
     if not host or not user or not password:
         return False, "SMTP_HOST, SMTP_USER, or SMTP_PASS is missing"
-
-    subject = "Your Login OTP"
-    body = (
-        f"Hello {name},\n\nYour OTP for the student portal is {otp}. "
-        "It will expire in 10 minutes.\n\nThank you."
-    )
 
     if os.name == "nt":
         curl_result = send_email_otp_with_curl(
@@ -1404,6 +1424,58 @@ def send_email_otp(email: str, otp: str, name: str) -> tuple[bool, str]:
         body=body,
     )
     return smtp_result
+
+
+def email_sender_address() -> str:
+    configured = os.getenv("EMAIL_FROM") or os.getenv("SMTP_FROM") or os.getenv("SMTP_USER") or ""
+    _, parsed_address = parseaddr(configured)
+    if re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", parsed_address):
+        display_name = os.getenv("EMAIL_FROM_NAME", "Student Portal").strip()
+        if display_name and configured == parsed_address:
+            return f"{display_name} <{parsed_address}>"
+        return configured
+    user = os.getenv("SMTP_USER", "").strip()
+    if re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", user):
+        display_name = os.getenv("EMAIL_FROM_NAME", "Student Portal").strip()
+        return f"{display_name} <{user}>" if display_name else user
+    return ""
+
+
+def send_email_otp_with_resend(
+    *,
+    api_key: str,
+    sender: str,
+    recipient: str,
+    subject: str,
+    body: str,
+) -> tuple[bool, str]:
+    payload = json.dumps(
+        {
+            "from": sender,
+            "to": [recipient],
+            "subject": subject,
+            "text": body,
+        }
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "student-marks-portal/1.0",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            response.read()
+    except urllib.error.HTTPError as exc:
+        details = exc.read().decode("utf-8", errors="ignore").strip()
+        return False, f"Resend API HTTP {exc.code}: {details or exc.reason}"
+    except Exception as exc:
+        return False, f"Resend API {type(exc).__name__}: {exc}"
+    return True, "sent via Resend API"
 
 
 def send_email_otp_with_smtplib(
@@ -1592,6 +1664,8 @@ class StudentPortalHandler(SimpleHTTPRequestHandler):
         path = unquote(path.split("?", 1)[0].split("#", 1)[0])
         if path == "/":
             path = "/index.html"
+        elif path in {"/admin", "/admin/"}:
+            path = "/admin.html"
         return str((ROOT / path.lstrip("/")).resolve())
 
     def do_POST(self) -> None:
@@ -1909,7 +1983,7 @@ class StudentPortalHandler(SimpleHTTPRequestHandler):
             }
             if not email_sent:
                 response["emailStatus"] = email_status
-                if smtp_is_configured():
+                if otp_email_is_configured():
                     OTP_STORE.pop(otp_key, None)
                     self.send_json(
                         {
@@ -1967,7 +2041,7 @@ def main() -> None:
     local_url = f"http://127.0.0.1:{port}"
     print(f"Student portal running on {host}:{port}")
     print(f"Open student page: {local_url}")
-    print(f"Open admin panel: {local_url}/admin.html")
+    print(f"Open admin panel: {local_url}/admin")
     print(f"Project folder: {ROOT}")
     print(f"Excel source: {data_file()}")
     print(f"SMTP configured: {'yes' if smtp_is_configured() else 'no'}")
