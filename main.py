@@ -164,8 +164,6 @@ def get_drive_excel_files():
 
         return DRIVE_PAPER_CACHE
 
-    service = google_drive_service()
-
     folder_id = os.getenv(
         "GOOGLE_DRIVE_FOLDER_ID"
     )
@@ -183,15 +181,13 @@ def get_drive_excel_files():
         f"and ({mime_query})"
     )
 
-    result = (
-        service.files()
-        .list(
+    result = execute_drive_request(
+        lambda service: service.files().list(
             q=query,
             fields=
             "files(id,name,createdTime)",
             supportsAllDrives=True
         )
-        .execute()
     )
 
     files = result.get(
@@ -459,6 +455,21 @@ def google_drive_service():
     return DRIVE_SERVICE
 
 
+def execute_drive_request(make_request):
+    global DRIVE_SERVICE
+
+    try:
+        return make_request(google_drive_service()).execute()
+    except Exception as exc:
+        disable_ssl_verify = os.getenv("GOOGLE_API_DISABLE_SSL_VERIFY", "").strip().lower() in {"1", "true", "yes"}
+        if not is_ssl_certificate_error(exc) or disable_ssl_verify:
+            raise
+
+        os.environ["GOOGLE_API_DISABLE_SSL_VERIFY"] = "true"
+        DRIVE_SERVICE = None
+        return make_request(google_drive_service()).execute()
+
+
 def drive_folder_id() -> str:
     folder_id = os.getenv("GOOGLE_DRIVE_FOLDER_ID", "").strip()
     if not folder_id:
@@ -471,16 +482,19 @@ def drive_query_value(value: str) -> str:
 
 
 def find_drive_file_by_name(name: str) -> str:
-    service = google_drive_service()
     folder_id = drive_folder_id()
     query = (
         f"name = '{drive_query_value(name)}' and "
         f"'{drive_query_value(folder_id)}' in parents and trashed = false"
     )
-    result = (
-        service.files()
-        .list(q=query, spaces="drive", fields="files(id, name)", pageSize=1, supportsAllDrives=True)
-        .execute()
+    result = execute_drive_request(
+        lambda service: service.files().list(
+            q=query,
+            spaces="drive",
+            fields="files(id, name)",
+            pageSize=1,
+            supportsAllDrives=True,
+        )
     )
     files = result.get("files", [])
     return str(files[0]["id"]) if files else ""
@@ -495,13 +509,24 @@ def download_drive_file(file_id: str) -> bytes:
             "Run: pip install -r requirements.txt"
         ) from exc
 
-    request = google_drive_service().files().get_media(fileId=file_id, supportsAllDrives=True)
-    output = BytesIO()
-    downloader = MediaIoBaseDownload(output, request)
-    done = False
-    while not done:
-        _, done = downloader.next_chunk()
-    return output.getvalue()
+    for attempt in range(2):
+        request = google_drive_service().files().get_media(fileId=file_id, supportsAllDrives=True)
+        output = BytesIO()
+        downloader = MediaIoBaseDownload(output, request)
+        done = False
+        try:
+            while not done:
+                _, done = downloader.next_chunk()
+            return output.getvalue()
+        except Exception as exc:
+            disable_ssl_verify = os.getenv("GOOGLE_API_DISABLE_SSL_VERIFY", "").strip().lower() in {"1", "true", "yes"}
+            if attempt or not is_ssl_certificate_error(exc) or disable_ssl_verify:
+                raise
+            os.environ["GOOGLE_API_DISABLE_SSL_VERIFY"] = "true"
+            global DRIVE_SERVICE
+            DRIVE_SERVICE = None
+
+    return b""
 
 
 def upload_drive_file(
@@ -519,31 +544,34 @@ def upload_drive_file(
             "Run: pip install -r requirements.txt"
         ) from exc
 
-    service = google_drive_service()
     media = MediaIoBaseUpload(BytesIO(content), mimetype=mime_type, resumable=False)
     if file_id:
-        result = (
-            service.files()
-            .update(fileId=file_id, body={"name": name}, media_body=media, fields="id", supportsAllDrives=True)
-            .execute()
+        result = execute_drive_request(
+            lambda service: service.files().update(
+                fileId=file_id,
+                body={"name": name},
+                media_body=media,
+                fields="id",
+                supportsAllDrives=True,
+            )
         )
     else:
-        result = (
-            service.files()
-            .create(
+        result = execute_drive_request(
+            lambda service: service.files().create(
                 body={"name": name, "parents": [drive_folder_id()]},
                 media_body=media,
                 fields="id",
                 supportsAllDrives=True,
             )
-            .execute()
         )
     return str(result["id"])
 
 
 def delete_drive_file(file_id: str) -> None:
     if file_id:
-        google_drive_service().files().delete(fileId=file_id, supportsAllDrives=True).execute()
+        execute_drive_request(
+            lambda service: service.files().delete(fileId=file_id, supportsAllDrives=True)
+        )
 
 
 def read_drive_registry_payload() -> dict[str, object]:
@@ -1732,8 +1760,6 @@ class StudentPortalHandler(SimpleHTTPRequestHandler):
     def handle_admin_status(self) -> None:
         if not self.require_admin():
             return
-
-        ensure_default_paper_registry()
 
         try:
             papers = []
