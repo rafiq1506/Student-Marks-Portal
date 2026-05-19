@@ -304,6 +304,9 @@
 
   <!-- Admin Authentication Card (Elevated) -->
   <div id="admin-login-panel" class="admin-glass-panel admin-login-card">
+    <a class="admin-student-link" href="/" aria-label="Open student login" title="Student login">
+      <i class="ti ti-shield-lock" aria-hidden="true"></i>
+    </a>
     <div class="admin-login-mark" aria-hidden="true">
       <svg width="46" height="46" viewBox="0 0 48 48" fill="none" role="img">
         <path d="M24 7c6 5 9 10 9 17s-3 12-9 17c-6-5-9-10-9-17s3-12 9-17Z" stroke="currentColor" stroke-width="3" />
@@ -351,6 +354,12 @@
   </div>
 
   <div id="admin-dashboard" class="hidden">
+  <div class="admin-dashboard-actions">
+    <button id="admin-logout" class="admin-logout-button" type="button">
+      <i class="ti ti-logout" aria-hidden="true"></i>
+      <span>Logout</span>
+    </button>
+  </div>
   <div id="dashboard-message" class="message-luxury" role="status"></div>
   <div class="uploaded-papers-shell">
     <div class="data-card uploaded-papers-card">
@@ -470,7 +479,7 @@
   </div>
 </div>
 
-<script src="admin.js?v=20260517-inline-upload"></script>
+<script src="admin.js?v=20260519-logout"></script>
 <script src="admin_upload.js?v=20260517-inline-upload"></script>
 </body>
 </html>
