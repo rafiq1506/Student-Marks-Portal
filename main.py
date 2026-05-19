@@ -88,8 +88,8 @@ COLUMN_ALIASES = {
         "exam_roll_no",
     ],
     "email": ["email", "email id", "email_id", "student email", "mail"],
-    "assignment_marks": ["assignment marks", "assignment_marks", "assignment", "assignment (4)"],
-    "test_marks": ["test marks", "test_marks", "test", "test (4)"],
+    "assignment_marks": ["assignment marks", "assignment_marks", "assignment", "assignment (12)"],
+    "test_marks": ["test marks", "test_marks", "test", "test (12)"],
     "lectures_taken": [
         "lectures taken (theory+practical)",
         "lectures taken",
@@ -111,7 +111,7 @@ COLUMN_ALIASES = {
         "percentage",
     ],
     "attendance_marks": [
-        "attendance marks (2)",
+        "attendance marks (6)",
         "attendance marks",
         "attendance_marks",
     ],
@@ -122,7 +122,7 @@ COLUMN_ALIASES = {
         "internals",
         "iaee internal marks",
         "iees internal marks",
-        "total ia marks (10)",
+        "total ia marks (30)",
         "total ia marks",
     ],
 }
