@@ -8,6 +8,7 @@ const paperList = document.querySelector("#paper-list");
 const showUploadDataButton = document.querySelector("#show-upload-data");
 const uploadPanel = document.querySelector("#admin-upload-panel");
 const hideUploadDataButton = document.querySelector("#hide-upload-data");
+const adminLogoutButton = document.querySelector("#admin-logout");
 
 let isAuthenticated = false;
 
@@ -55,11 +56,38 @@ function showDashboard() {
   adminDashboard.classList.remove("hidden");
 }
 
+function logoutAdmin() {
+  isAuthenticated = false;
+  sessionStorage.removeItem("adminPassword");
+  passwordInput.value = "";
+  document.body.classList.add("admin-login-mode");
+  loginPanel.classList.remove("hidden");
+  adminStats.classList.add("hidden");
+  adminDashboard.classList.add("hidden");
+  uploadPanel.classList.add("hidden");
+  message.textContent = "";
+  dashboardMessage.textContent = "";
+  message.className = "message-luxury";
+  dashboardMessage.className = "message-luxury";
+  passwordInput.focus();
+}
+
 async function adminFetch(url, options = {}) {
   const headers = new Headers(options.headers || {});
   headers.set("X-Admin-Password", adminPassword());
-  const response = await fetch(url, { ...options, headers });
-  const data = await response.json();
+  let response;
+  try {
+    response = await fetch(url, { ...options, headers });
+  } catch (error) {
+    throw new Error("Admin server did not respond. Please refresh and try again.");
+  }
+  const text = await response.text();
+  let data = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (error) {
+    throw new Error("Admin server returned an unreadable response.");
+  }
   if (!response.ok) {
     throw new Error(data.error || "Request failed.");
   }
@@ -117,6 +145,8 @@ async function refreshStatus() {
 }
 
 document.querySelector("#refresh-status").addEventListener("click", refreshStatus);
+
+adminLogoutButton.addEventListener("click", logoutAdmin);
 
 showUploadDataButton.addEventListener("click", () => {
   sessionStorage.setItem("adminPassword", adminPassword());
