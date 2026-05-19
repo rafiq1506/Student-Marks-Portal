@@ -33,6 +33,7 @@ const totalIaMarksSpan = document.querySelector("#total-ia-marks");
 let activeRollNumber = "";
 let activePaperId = "";
 const PAPER_CACHE_KEY = "studentPortalPapers";
+const PAPER_OPTION_INDENT = "\u00a0\u00a0";
 
 function fallback(value) {
   return value && value !== "" ? value : "-";
@@ -84,14 +85,14 @@ async function postJson(url, payload) {
 function renderPaperOptions(papers) {
   paperSelect.innerHTML = "";
   if (!papers.length) {
-    paperSelect.innerHTML = '<option value="">No papers available</option>';
+    paperSelect.appendChild(new Option(`${PAPER_OPTION_INDENT}No papers available`, ""));
     sendButton.disabled = true;
     setMessage("No paper data has been uploaded yet.", "error");
     return;
   }
-  paperSelect.appendChild(new Option("Select paper", ""));
+  paperSelect.appendChild(new Option(`${PAPER_OPTION_INDENT}Select paper`, ""));
   papers.forEach((paper) => {
-    paperSelect.appendChild(new Option(paper.name, paper.id));
+    paperSelect.appendChild(new Option(`${PAPER_OPTION_INDENT}${paper.name}${PAPER_OPTION_INDENT}`, paper.id));
   });
   sendButton.disabled = false;
 }
@@ -117,8 +118,9 @@ async function loadPapers() {
     sessionStorage.setItem(PAPER_CACHE_KEY, JSON.stringify(papers));
     renderPaperOptions(papers);
   } catch (error) {
-    if (!paperSelect.options.length || paperSelect.options[0].textContent === "Loading papers...") {
-      paperSelect.innerHTML = '<option value="">Could not load papers</option>';
+    if (!paperSelect.options.length || paperSelect.options[0].textContent.trim() === "Loading papers...") {
+      paperSelect.innerHTML = "";
+      paperSelect.appendChild(new Option(`${PAPER_OPTION_INDENT}Could not load papers`, ""));
       sendButton.disabled = true;
     }
     setMessage(error.message, "error");
@@ -206,7 +208,7 @@ loginForm.addEventListener("submit", async (event) => {
       const reason = data.emailStatus ? ` Reason: ${data.emailStatus}` : "";
       setMessage(`Email was not sent. Demo OTP: ${data.demoOtp}.${reason}`, "error");
     } else {
-      setMessage("Verification code emailed.", "success");
+      setMessage("Please check your spam or junk folder if you do not receive it.", "success");
     }
   } catch (error) {
     setMessage(error.message, "error");
