@@ -3101,12 +3101,40 @@ body.student-login-mode,
 }
 
 .student-login-card {
+  position: relative;
   width: min(100%, 462px) !important;
   padding: 2rem 1.75rem !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 8px !important;
   background: #ffffff !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+.student-admin-link {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #667085;
+  font-size: 18px;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.student-admin-link:hover,
+.student-admin-link:focus-visible {
+  border-color: #1d9e75;
+  background: #f3fbf8;
+  color: #0f6e56;
+  box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.12);
+  outline: none;
 }
 
 .student-login-mark {
@@ -3187,6 +3215,11 @@ body.student-login-mode,
   color: #1a1a1a !important;
   font-family: "DM Sans", Inter, sans-serif !important;
   font-size: 14px !important;
+}
+
+#paper-select option {
+  padding: 8px 14px 8px 18px;
+  text-indent: 8px;
 }
 
 .student-input-wrap input::placeholder {
