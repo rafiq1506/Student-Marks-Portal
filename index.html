@@ -73,91 +73,137 @@
 </div>
 
 <div id="student-dashboard" class="portal-container hidden">
-  <div class="academic-header">
-    <div class="institution-brand">
-      <div class="uni-seal">📜</div>
-      <div class="uni-text">
-        <h3>Design By: Dr. Mohd Rafiq</h3>
-        <p>Internal Assessment</p>
+
+  <div id="student-marksheet" class="ms-shell hidden">
+
+    <!-- Top bar: designer credit + new search -->
+    <div class="ms-topbar">
+      <div class="ms-designer-tag">
+        <i class="ti ti-pencil-star" aria-hidden="true"></i>
+        Designed by Dr. Mohd Rafiq
       </div>
+      <button id="start-over" class="ms-new-search-btn">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i> New Search
+      </button>
     </div>
-<!--    <div class="header-action">-->
-<!--      <a href="/admin.html" target="_blank">Admin Console</a>-->
-<!--    </div>-->
-  </div>
 
-  <div id="verified-session" class="verified-badge-academic hidden">
-    <div>✅</div>
-    <div><strong>Identity Verified</strong><br /><span>Academic record unlocked</span></div>
-    <button id="start-over" class="student-start-over">New Search</button>
-  </div>
-
-  <div class="student-dashboard-grid">
-    <div class="marksheet-card">
-      <div id="empty-state" class="empty-marksheet hidden">
-        <div class="empty-icon">📘</div>
-        <h3>Awaiting Verification</h3>
-        <p>Enter your examination roll number and OTP to view the official internal assessment marksheet.</p>
-        <div class="protected-pill">Protected by OTP</div>
-      </div>
-
-      <div id="student-marksheet" class="student-marksheet hidden">
-        <div class="marksheet-header">
-          <div class="degree-tag">Internal Assessment Statement</div>
-          <div class="student-name-large" id="student-name">-</div>
-          <div class="course-name" id="course-name">-</div>
-          <div class="paper-name" id="paper-name">-</div>
-          <div class="roll-details">
-            <span class="roll-item">College Roll: <strong id="college-roll">-</strong></span>
-            <span class="roll-item">Exam Roll: <strong id="exam-roll">-</strong></span>
+    <!-- Hero card: student info + two big metrics -->
+    <div class="ms-hero-card">
+      <div class="ms-hero-top">
+        <div class="ms-hero-left">
+          <div class="ms-ia-tag">
+            <i class="ti ti-file-certificate" aria-hidden="true"></i>
+            Internal Assessment Statement
+          </div>
+          <div class="ms-student-name" id="student-name">-</div>
+          <div class="ms-student-meta" id="course-name">-</div>
+          <div class="ms-paper-chip">
+            <i class="ti ti-books" aria-hidden="true"></i>
+            <span id="paper-name">-</span>
           </div>
         </div>
-        <div class="marksheet-body">
-          <div class="summary-strip">
-            <div class="summary-card">
-              <div class="summary-label">Internal Marks</div>
-              <div class="summary-score" id="internals">-</div>
-              <div class="summary-sub">out of 30 max</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Attendance Percentage</div>
-              <div class="summary-score" id="attendance">-</div>
-              <div class="summary-sub"><span id="total-attendance">-</span> attended</div>
-            </div>
+        <div class="ms-rolls">
+          <div class="ms-roll-pill">College Roll&nbsp;&nbsp;<strong id="college-roll">-</strong></div>
+          <div class="ms-roll-pill">Exam Roll&nbsp;&nbsp;<strong id="exam-roll">-</strong></div>
+        </div>
+      </div>
+
+      <!-- Two big metrics: IA marks + Attendance only -->
+      <div class="ms-metrics-row">
+        <div class="ms-metric-card">
+          <div class="ms-metric-icon ms-icon-green">
+            <i class="ti ti-sum" aria-hidden="true"></i>
           </div>
-
-          <div class="breakdown-title">Month-wise Attendance</div>
-          <table class="marks-table attendance-table">
-            <thead>
-              <tr><th>Month</th><th>Total Lectures</th><th>Lectures Attended</th></tr>
-            </thead>
-            <tbody id="attendance-months">
-              <tr><td colspan="3">No month-wise attendance available</td></tr>
-            </tbody>
-          </table>
-
-          <div class="breakdown-title">Component-wise Breakdown</div>
-          <table class="marks-table">
-            <thead>
-              <tr><th>Assessment Component</th><th>Max. Marks</th><th>Marks Obtained</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Assignment</td><td class="max-value">12</td><td class="mark-value" id="assignment-marks">-</td></tr>
-              <tr><td>Theory Test</td><td class="max-value">12</td><td class="mark-value" id="test-marks">-</td></tr>
-              <tr><td>Attendance Marks</td><td class="max-value">06</td><td class="mark-value" id="attendance-marks">-</td></tr>
-              <tr><td>Total IA Marks</td><td class="max-value">30</td><td class="mark-value" id="total-ia-marks">-</td></tr>
-            </tbody>
-          </table>
-
-          <div class="verification-strip">
-            <div><span>Verification status</span><br/><small>Digitally signed record</small></div>
-            <div class="verified-pill">Verified via OTP</div>
+          <div class="ms-metric-body">
+            <div class="ms-metric-label">Total IA Marks</div>
+            <div class="ms-metric-value ms-green">
+              <span id="internals">-</span>
+              <span class="ms-metric-denom">&nbsp;/ 30</span>
+            </div>
+            <div class="ms-metric-sub" id="ia-percent-sub">—</div>
+            <div class="ms-mbar"><div class="ms-mbar-fill ms-fill-green" id="ia-bar" style="width:0%"></div></div>
           </div>
-          <footer-note>This is an electronically generated internal assessment record. For any discrepancy, contact to Dr. Mohd Rafiq.</footer-note>
+        </div>
+        <div class="ms-metric-card">
+          <div class="ms-metric-icon ms-icon-blue">
+            <i class="ti ti-calendar-stats" aria-hidden="true"></i>
+          </div>
+          <div class="ms-metric-body">
+            <div class="ms-metric-label">Attendance</div>
+            <div class="ms-metric-value ms-blue" id="attendance">-</div>
+            <div class="ms-metric-sub" id="total-attendance">—</div>
+            <div class="ms-mbar"><div class="ms-mbar-fill ms-fill-blue" id="att-bar" style="width:0%"></div></div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Two-column: component breakdown + month-wise attendance -->
+    <div class="ms-two-col">
+      <div class="ms-section-card">
+        <div class="ms-sec-head">
+          <i class="ti ti-table" aria-hidden="true"></i>
+          Component-wise Breakdown
+        </div>
+        <table class="ms-table">
+          <thead>
+            <tr><th>Component</th><th class="ms-tv">Max</th><th class="ms-tv">Obtained</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Assignment</td><td class="ms-tv">12</td><td class="ms-tv" id="assignment-marks">-</td></tr>
+            <tr><td>Theory Test</td><td class="ms-tv">12</td><td class="ms-tv" id="test-marks">-</td></tr>
+            <tr><td>Attendance Marks</td><td class="ms-tv">06</td><td class="ms-tv" id="attendance-marks">-</td></tr>
+            <tr class="ms-total-row">
+              <td>Total IA Marks</td>
+              <td class="ms-tv">30</td>
+              <td class="ms-tv ms-green" id="total-ia-marks">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ms-section-card">
+        <div class="ms-sec-head">
+          <i class="ti ti-calendar" aria-hidden="true"></i>
+          Month-wise Attendance
+        </div>
+        <table class="ms-table">
+          <thead>
+            <tr><th>Month</th><th class="ms-tv">Total</th><th class="ms-tv">Attended</th></tr>
+          </thead>
+          <tbody id="attendance-months">
+            <tr><td colspan="3" class="ms-empty-row">No month-wise attendance available</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer strip -->
+    <div class="ms-footer-strip">
+      <div class="ms-verified-chip">
+        <i class="ti ti-circle-check" aria-hidden="true"></i>
+        Verified via OTP &middot; Digitally signed record
+      </div>
+      <span class="ms-footer-note-right">For discrepancies, contact Dr. Mohd Rafiq</span>
+    </div>
+
   </div>
+
+  <!-- Empty / awaiting state (shown before OTP verified) -->
+  <div id="empty-state" class="ms-empty-state hidden">
+    <div class="ms-empty-icon">
+      <i class="ti ti-file-certificate" aria-hidden="true"></i>
+    </div>
+    <h3>Awaiting Verification</h3>
+    <p>Enter your examination roll number and OTP to view the official internal assessment marksheet.</p>
+    <div class="ms-protected-pill">
+      <i class="ti ti-lock" aria-hidden="true"></i> Protected by OTP
+    </div>
+  </div>
+
+  <!-- Verified session banner (shown after OTP success, inside login screen) -->
+  <div id="verified-session" class="hidden"></div>
+
 </div>
 
 <script src="app.js?v=20260509-student-login-dashboard"></script>
