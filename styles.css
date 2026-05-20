@@ -3443,3 +3443,402 @@ body:not(.student-login-mode) #student-dashboard .verification-strip {
   background: #f7fafb !important;
   font-family: "DM Sans", Inter, sans-serif !important;
 }
+
+/* ============================================================
+   NEW STUDENT MARKSHEET DASHBOARD (ms- prefix)
+   ============================================================ */
+
+.ms-shell {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+  font-family: "DM Sans", Inter, sans-serif;
+}
+
+/* Top bar */
+.ms-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ms-designer-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f6e56;
+  background: #e1f5ee;
+  border: 1px solid rgba(29, 158, 117, 0.2);
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.ms-designer-tag i { font-size: 15px; }
+
+.ms-new-search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-family: "DM Sans", Inter, sans-serif;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ms-new-search-btn:hover {
+  background: #f7fafb;
+  border-color: #1d9e75;
+  color: #0f6e56;
+}
+
+/* Hero card */
+.ms-hero-card {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.ms-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+
+.ms-ia-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0f6e56;
+  background: #e1f5ee;
+  border: 1px solid rgba(29, 158, 117, 0.2);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.ms-student-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.ms-student-meta {
+  font-size: 13px;
+  color: #666666;
+  margin-bottom: 8px;
+}
+
+.ms-paper-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #185fa5;
+  background: #e6f1fb;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.ms-rolls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.ms-roll-pill {
+  font-size: 11px;
+  padding: 4px 12px;
+  background: #f7fafb;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  white-space: nowrap;
+  color: #666666;
+}
+
+.ms-roll-pill strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Two big metrics */
+.ms-metrics-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ms-metric-card {
+  background: #f7fafb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ms-metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.ms-icon-green { background: #e1f5ee; color: #0f6e56; }
+.ms-icon-blue  { background: #e6f1fb; color: #185fa5; }
+
+.ms-metric-body { flex: 1; min-width: 0; }
+
+.ms-metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888888;
+  margin-bottom: 4px;
+}
+
+.ms-metric-value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  color: #1a1a1a;
+}
+
+.ms-metric-denom {
+  font-size: 14px;
+  font-weight: 400;
+  color: #aaaaaa;
+}
+
+.ms-metric-sub {
+  font-size: 11px;
+  color: #888888;
+  margin-top: 3px;
+}
+
+.ms-green { color: #1d9e75 !important; }
+.ms-blue  { color: #378add !important; }
+
+.ms-mbar {
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb;
+  margin-top: 8px;
+}
+
+.ms-mbar-fill {
+  height: 4px;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+
+.ms-fill-green { background: #1d9e75; }
+.ms-fill-blue  { background: #378add; }
+
+/* Two-column section cards */
+.ms-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.ms-section-card {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.ms-sec-head {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666666;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid #e5e7eb;
+  background: #f7fafb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ms-sec-head i { font-size: 14px; color: #1d9e75; }
+
+.ms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-family: "DM Sans", Inter, sans-serif;
+}
+
+.ms-table th {
+  text-align: left;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888888;
+  background: #f7fafb;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+
+.ms-table td {
+  padding: 9px 14px;
+  border-bottom: 0.5px solid #e5e7eb;
+  color: #1a1a1a;
+}
+
+.ms-table tr:last-child td { border-bottom: none; }
+
+.ms-tv {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.ms-total-row td {
+  background: #f7fafb;
+  font-weight: 600;
+}
+
+.ms-month-pill {
+  display: inline-block;
+  font-size: 11px;
+  background: #e6f1fb;
+  color: #185fa5;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.ms-empty-row {
+  color: #888888;
+  font-style: italic;
+  text-align: center;
+  padding: 18px 14px !important;
+}
+
+/* Footer strip */
+.ms-footer-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f7fafb;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.ms-verified-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f6e56;
+}
+
+.ms-verified-chip i { font-size: 15px; }
+
+.ms-footer-note-right {
+  font-size: 11px;
+  color: #888888;
+}
+
+/* Empty / awaiting state */
+.ms-empty-state {
+  max-width: 860px;
+  margin: 3rem auto;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.ms-empty-icon {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.ms-empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.ms-empty-state p {
+  font-size: 14px;
+  color: #666666;
+  max-width: 380px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.6;
+}
+
+.ms-protected-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f6e56;
+  background: #e1f5ee;
+  border: 1px solid rgba(29, 158, 117, 0.2);
+  padding: 5px 14px;
+  border-radius: 20px;
+}
+
+/* Dashboard container when showing marksheet */
+body:not(.student-login-mode) #student-dashboard.portal-container {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .ms-hero-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ms-rolls { align-items: flex-start; }
+  .ms-metrics-row { grid-template-columns: 1fr; }
+  .ms-two-col { grid-template-columns: 1fr; }
+  .ms-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .ms-footer-strip { flex-direction: column; align-items: flex-start; }
+}
