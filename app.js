@@ -29,6 +29,9 @@ const totalAttendanceSpan = document.querySelector("#total-attendance");
 const attendanceMonthsBody = document.querySelector("#attendance-months");
 const internalsSpan = document.querySelector("#internals");
 const totalIaMarksSpan = document.querySelector("#total-ia-marks");
+const iaBarEl = document.querySelector("#ia-bar");
+const attBarEl = document.querySelector("#att-bar");
+const iaPercentSubEl = document.querySelector("#ia-percent-sub");
 
 let activeRollNumber = "";
 let activePaperId = "";
@@ -135,6 +138,7 @@ function formatPercent(value) {
 }
 
 function showStudent(student) {
+  // Header info
   studentNameSpan.textContent = fallback(student.name);
   courseNameSpan.textContent = fallback(student.course_name);
   paperNameSpan.textContent = fallback(
@@ -142,34 +146,47 @@ function showStudent(student) {
   );
   collegeRollSpan.textContent = fallback(student.college_roll_number);
   examRollSpan.textContent = fallback(student.exam_roll_number);
+
+  // Component breakdown table
   assignmentSpan.textContent = twoDigit(student.assignment_marks);
   testSpan.textContent = twoDigit(student.test_marks);
   attendanceMarksSpan.textContent = twoDigit(student.attendance_marks);
-  attendancePercentSpan.textContent = formatPercent(student.attendance_percentage);
 
+  // Total IA marks + progress bar
+  const totalIa = twoDigit(student.internal_marks);
+  internalsSpan.textContent = totalIa;
+  totalIaMarksSpan.textContent = totalIa;
+  const iaNum = parseFloat(student.internal_marks);
+  if (iaBarEl) iaBarEl.style.width = (Number.isFinite(iaNum) ? Math.min(100, (iaNum / 30) * 100) : 0).toFixed(1) + "%";
+  if (iaPercentSubEl) iaPercentSubEl.textContent = Number.isFinite(iaNum) ? Math.round((iaNum / 30) * 100) + "% score" : "—";
+
+  // Attendance % + progress bar
+  attendancePercentSpan.textContent = formatPercent(student.attendance_percentage);
+  const attNum = parseFloat(student.attendance_percentage);
+  const attPct = Number.isFinite(attNum) ? (attNum <= 1 ? attNum * 100 : attNum) : 0;
+  if (attBarEl) attBarEl.style.width = Math.min(100, attPct).toFixed(1) + "%";
+
+  // Attendance sub-label
   const attended = twoDigit(student.total_attendance);
   const taken = student.lectures_taken ? ` of ${twoDigit(student.lectures_taken)}` : "";
-  totalAttendanceSpan.textContent = `${attended}${taken}`;
+  totalAttendanceSpan.textContent = attended !== "-" ? `${attended}${taken} lectures attended` : "—";
 
+  // Month-wise attendance table
   attendanceMonthsBody.innerHTML = "";
   const months = student.attendance_months || [];
   if (!months.length) {
-    attendanceMonthsBody.innerHTML = '<tr><td colspan="3">No month-wise attendance available</td></tr>';
+    attendanceMonthsBody.innerHTML = '<tr><td colspan="3" class="ms-empty-row">No month-wise attendance available</td></tr>';
   } else {
     months.forEach((item) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${fallback(item.month || item.label)}</td>
-        <td>${twoDigit(item.total)}</td>
-        <td class="mark-value">${twoDigit(item.attended)}</td>
+        <td><span class="ms-month-pill">${fallback(item.month || item.label)}</span></td>
+        <td class="ms-tv">${twoDigit(item.total)}</td>
+        <td class="ms-tv">${twoDigit(item.attended)}</td>
       `;
       attendanceMonthsBody.appendChild(row);
     });
   }
-
-  const totalIa = twoDigit(student.internal_marks);
-  internalsSpan.textContent = totalIa;
-  totalIaMarksSpan.textContent = totalIa;
 
   emptyStateDiv.classList.add("hidden");
   studentMarksheetDiv.classList.remove("hidden");
@@ -254,6 +271,9 @@ function resetToLogin() {
   setMessage("");
   emptyStateDiv.classList.remove("hidden");
   studentMarksheetDiv.classList.add("hidden");
+  // Reset progress bars
+  if (iaBarEl) iaBarEl.style.width = "0%";
+  if (attBarEl) attBarEl.style.width = "0%";
   paperSelect.focus();
 }
 
